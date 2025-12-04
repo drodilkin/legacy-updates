@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEGACY HACK - Вход</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(20, 20, 35, 0.95);
+            border-radius: 15px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border: 1px solid #2a2a4a;
+            animation: fadeIn 0.8s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Эффект глитча */
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 157, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: glitch 3s infinite;
+        }
+
+        @keyframes glitch {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 0.5; }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-header h1 {
+            color: #00ff9d;
+            font-size: 32px;
+            text-shadow: 0 0 15px #00ff9d;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .login-header .subtitle {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            color: #aaa;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+
+        .form-input {
+            padding: 15px;
+            background: rgba(40, 40, 60, 0.8);
+            border: 1px solid #4a4a7a;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #00ff9d;
+            box-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
+        }
+
+        .form-input::placeholder {
+            color: #666;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #00ff9d;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .login-btn {
+            padding: 15px;
+            background: linear-gradient(45deg, #00ff9d, #00b8ff);
+            border: none;
+            border-radius: 10px;
+            color: #000;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 255, 157, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #3a3a6a;
+            position: relative;
+            z-index: 2;
+        }
+
+        .credits {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .version {
+            color: #00ff9d;
+            font-size: 12px;
+            font-family: monospace;
+        }
+
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Сообщение об ошибке */
+        .error-message {
+            background: rgba(255, 50, 50, 0.1);
+            border: 1px solid #ff3232;
+            color: #ff6b6b;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            display: none;
+            margin-top: 10px;
+        }
+
+        /* Загрузка */
+        .loader {
+            display: none;
+            width: 30px;
+            height: 30px;
+            margin: 10px auto;
+            border: 3px solid rgba(0, 255, 157, 0.3);
+            border-top: 3px solid #00ff9d;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Медиа-запросы */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+            
+            .login-header h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>LEGACY HACK</h1>
+            <div class="subtitle">Вход в панель управления обновлениями</div>
+        </div>
+
+        <form id="loginForm" class="login-form">
+            <div class="form-group">
+                <label class="form-label">Логин</label>
+                <input type="text" class="form-input" id="username" 
+                       placeholder="Введите ваш логин" required autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Пароль</label>
+                <div class="password-container">
+                    <input type="password" class="form-input" id="password" 
+                           placeholder="Введите пароль" required autocomplete="current-password">
+                    <button type="button" class="toggle-password" id="togglePassword">👁️</button>
+                </div>
+            </div>
+
+            <div class="error-message" id="errorMessage">
+                Неверный логин или пароль!
+            </div>
+
+            <div class="loader" id="loader"></div>
+
+            <button type="submit" class="login-btn pulse" id="loginBtn">
+                🔐 ВОЙТИ
+            </button>
+        </form>
+
+        <div class="login-footer">
+            <div class="credits">Created by Roman & Kirill</div>
+            <div class="version">Version 1.0.0.1</div>
+        </div>
+    </div>
+
+    <!-- Скрытая админ-панель (показывается после входа) -->
+    <div id="adminPanel" style="display: none; width: 100%;">
+        <!-- Здесь будет вставлена админ-панель из предыдущего скрипта -->
+    </div>
+
+    <script>
+        // Данные для входа (обычно хранятся на сервере)
+        const VALID_CREDENTIALS = {
+            username: "admin",
+            password: "legacy2024"
+        };
+
+        // Элементы DOM
+        const loginForm = document.getElementById('loginForm');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const togglePasswordBtn = document.getElementById('togglePassword');
+        const errorMessage = document.getElementById('errorMessage');
+        const loginBtn = document.getElementById('loginBtn');
+        const loader = document.getElementById('loader');
+        const loginContainer = document.querySelector('.login-container');
+        const adminPanel = document.getElementById('adminPanel');
+
+        // Переключение видимости пароля
+        togglePasswordBtn.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+        });
+
+        // Обработка входа
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            // Показать загрузку
+            loginBtn.style.display = 'none';
+            loader.style.display = 'block';
+            errorMessage.style.display = 'none';
+            
+            // Имитация проверки на сервере
+            setTimeout(() => {
+                if (username === VALID_CREDENTIALS.username && password === VALID_CREDENTIALS.password) {
+                    // Успешный вход
+                    loginSuccess();
+                } else {
+                    // Ошибка входа
+                    loginError();
+                }
+                
+                // Скрыть загрузку
+                loader.style.display = 'none';
+                loginBtn.style.display = 'block';
+            }, 1500); // Имитация задержки сети
+        });
+
+        // Успешный вход
+        function loginSuccess() {
+            // Эффект перехода
+            loginContainer.style.animation = 'fadeOut 0.5s ease forwards';
+            
+            setTimeout(() => {
+                // Скрыть форму входа
+                loginContainer.style.display = 'none';
+                
+                // Показать админ-панель
+                adminPanel.style.display = 'block';
+                
+                // Загружаем админ-панель
+                loadAdminPanel();
+                
+                // Добавляем в историю
+                window.history.pushState({admin: true}, '', '#admin');
+                
+                // Меняем заголовок
+                document.title = 'LEGACY HACK ADMIN PANEL';
+            }, 500);
+        }
+
+        // Ошибка входа
+        function loginError() {
+            // Показать сообщение об ошибке
+            errorMessage.style.display = 'block';
+            
+            // Анимация ошибки
+            errorMessage.style.animation = 'none';
+            setTimeout(() => {
+                errorMessage.style.animation = 'fadeIn 0.3s ease';
+            }, 10);
+            
+            // Эффект тряски
+            loginForm.style.transform = 'translateX(-5px)';
+            setTimeout(() => {
+                loginForm.style.transform = 'translateX(5px)';
+                setTimeout(() => {
+                    loginForm.style.transform = 'translateX(0)';
+                }, 100);
+            }, 50);
+            
+            // Очистить пароль
+            passwordInput.value = '';
+            passwordInput.focus();
+        }
+
+        // Загрузка админ-панели
+        function loadAdminPanel() {
+            // Вставляем HTML админ-панели (можно загрузить отдельным файлом)
+            adminPanel.innerHTML = `
+                <style>
+                    /* Стили админ-панели из предыдущего скрипта */
+                    * {
+                        margin: 0;
+                        padding: 0;
+                        box-sizing: border-box;
+                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    }
+
+                    body {
+                        background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+                        color: #e0e0e0;
+                        min-height: 100vh;
+                        padding: 20px;
+                    }
+
+                    .container {
+                        display: flex;
+                        max-width: 1400px;
+                        margin: 0 auto;
+                        background: rgba(20, 20, 35, 0.9);
+                        border-radius: 15px;
+                        overflow: hidden;
+                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+                        border: 1px solid #2a2a4a;
+                    }
+
+                    /* ... и все остальные стили из предыдущего скрипта ... */
+                </style>
+                <div class="container">
+                    <!-- Левая панель -->
+                    <div class="sidebar">
+                        <div class="logo">
+                            <h1>LEGACY HACK</h1>
+                            <div class="subtitle">ADMIN PANEL v2.1</div>
+                        </div>
+                        <ul class="nav-menu">
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <span class="nav-icon">🔍</span> AIDP
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#updates" class="nav-link active">
+                                    <span class="nav-icon">🔄</span> Обновления
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link" onclick="logout()">
+                                    <span class="nav-icon">🚪</span> Выход
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Основной контент -->
+                    <div class="main-content">
+                        <div class="header">
+                            <h2>Панель управления обновлениями</h2>
+                            <div class="user-info">
+                                <div class="user-avatar">AD</div>
+                                <span>Администратор</span>
+                            </div>
+                        </div>
+
+                        <!-- Карточки статистики -->
+                        <div class="stats-cards">
+                            <div class="stat-card">
+                                <div class="stat-title">Всего обновлений</div>
+                                <div class="stat-value" id="total-updates">3</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-title">Последняя версия</div>
+                                <div class="stat-value" id="latest-version">2.1.0</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-title">За сегодня</div>
+                                <div class="stat-value" id="today-updates">1</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-title">Статус системы</div>
+                                <div class="stat-value" style="color:#00ff9d; font-size:18px;">🟢 Активна</div>
+                            </div>
+                        </div>
+
+                        <!-- Секция добавления обновления -->
+                        <div class="updates-section" id="updates">
+                            <h3 class="section-title">📝 Создание нового обновления</h3>
+                            
+                            <form id="updateForm" class="update-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Версия обновления *</label>
+                                        <input type="text" class="form-input" id="version" 
+                                               placeholder="Пример: 2.1.0 или v1.5" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Ссылка на скачивание *</label>
+                                        <input type="url" class="form-input" id="link" 
+                                               placeholder="https://example.com/update.zip" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Что изменилось? (Changelog) *</label>
+                                    <textarea class="form-textarea" id="changelog" 
+                                              placeholder="Подробно опишите изменения, исправления и новые функции..." required></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Дополнительные заметки</label>
+                                    <textarea class="form-textarea" id="notes" 
+                                              placeholder="Любая дополнительная информация..."></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">
+                                        ✅ Опубликовать обновление
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Секция списка обновлений -->
+                        <div class="updates-section">
+                            <h3 class="section-title">📋 Последние обновления</h3>
+                            <div class="updates-list" id="updatesList">
+                                <!-- Обновления будут здесь -->
+                            </div>
+                        </div>
+
+                        <div class="footer">
+                            <p>© 2024 LEGACY HACK ADMIN PANEL | Версия 2.1.0 | Все права защищены</p>
+                            <p style="margin-top:5px; font-size:12px; color:#666">Вы вошли как: admin</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Инициализация админ-панели
+            initializeAdminPanel();
+        }
+
+        // Инициализация функционала админ-панели
+        function initializeAdminPanel() {
+            // Код инициализации из предыдущего скрипта
+            // ... (функции для работы с обновлениями)
+            
+            console.log('Админ-панель загружена!');
+            
+            // Пример: показать тестовые обновления
+            const updatesList = document.getElementById('updatesList');
+            if (updatesList) {
+                updatesList.innerHTML = `
+                    <div class="update-card">
+                        <div class="update-header">
+                            <div class="update-version">Версия 2.1.0</div>
+                            <div class="update-date">2024-01-15 14:30</div>
+                        </div>
+                        <div class="update-changelog">
+                            • Полностью переработан интерфейс админ-панели<br>
+                            • Добавлена система управления обновлениями<br>
+                            • Исправлены критические уязвимости безопасности<br>
+                            • Улучшена производительность на 40%
+                        </div>
+                        <a href="https://legacyhack.com/update/v2.1.0.zip" target="_blank" class="update-link">🔗 Скачать обновление</a>
+                    </div>
+                `;
+            }
+        }
+
+        // Выход из системы
+        function logout() {
+            if (confirm('Вы уверены, что хотите выйти?')) {
+                adminPanel.style.display = 'none';
+                loginContainer.style.display = 'block';
+                loginContainer.style.animation = 'fadeIn 0.5s ease';
+                
+                // Очистить поля
+                usernameInput.value = '';
+                passwordInput.value = '';
+                errorMessage.style.display = 'none';
+                
+                // Вернуть заголовок
+                document.title = 'LEGACY HACK - Вход';
+                
+                // Вернуть в историю
+                window.history.pushState({}, '', window.location.pathname);
+            }
+        }
+
+        // Обработка кнопки "Назад" в браузере
+        window.addEventListener('popstate', function(e) {
+            if (!e.state || !e.state.admin) {
+                logout();
+            }
+        });
+
+        // Автофокус на поле логина
+        window.addEventListener('load', function() {
+            usernameInput.focus();
+        });
+    </script>
+</body>
+</html>
