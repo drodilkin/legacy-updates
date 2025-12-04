@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Legacy Hack Admin</title>
+    <style>
+        body { background: black; color: lime; font-family: monospace; }
+        h1 { color: lime; text-align: center; }
+        button { background: lime; color: black; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>⚙️ LEGACY HACK ADMIN PANEL</h1>
+    <p>Добро пожаловать в панель управления!</p>
+    
+    <button onclick="addUpdate()">➕ Добавить обновление</button>
+    <button onclick="viewUpdates()">📋 Все обновления</button>
+    <button onclick="logout()">🚪 Выйти</button>
+    
+    <div id="content"></div>
+    
+    <script>
+        function addUpdate() {
+            document.getElementById('content').innerHTML = `
+                <h3>Добавить обновление:</h3>
+                <input id="ver" placeholder="Версия (1.0.0.1)"><br>
+                <input id="url" placeholder="Ссылка"><br>
+                <button onclick="saveUpdate()">💾 Сохранить</button>
+            `;
+        }
+        
+        function logout() {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
